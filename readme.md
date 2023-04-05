@@ -1,7 +1,7 @@
 
 # APPIUM ( With WebDriverIO )
 
-## What is Appium (Udemy Course)
+## What is Appium 
 - Open source automation framework for native, hybrid and mobile web apps in Android, iOS and Windows apps
 - Wraps the vendor provider framework into a WebDriver api
 - iOS: XCUITest
@@ -145,6 +145,24 @@ Look for the capabilities section and replace it with the following:
     }],
 
 
+# Common Assertions and Actions
+
+## Assertions
+> ***Element is displayed:*** `expect($('<element selector'>)).toBeDisplayed();`
+> ***Element to have text:*** `expect($('<element selector'>)).toHaveText("<replace expected text>");`
+> ***Array to Equal Array:*** `await  expect(actualList).toEqual(expectedList);`
+> ***Element to exist:*** `expect($('<element selector'>)).toBeExisting();`
+
+## Actions
+> ***Finding an element***:  `$('<replace Element selector>');`
+> ***Finding multiple elements***:  `$$('<replace common Elements selector>');`
+> ***Click On element***:  `$('<replace Element selector>').click();`
+> ***Filling an input***:  `$('<replace Element selector>').setValue('<replace with value>');`
+> ***Add Value to a textField***:  `$('<replace Element selector>').addValue('<replace with value>');`
+> ***Start activity:*** `await  driver.startActivity(currentPackage,${currentPackage}${currentActivity});`
+>***Get Alert text:*** `await  driver.getAlertText() `
+>***Accept Alert:*** `await  driver.acceptAlert() `
+>***Dismiss Alert:*** `await  driver.dismissAlert() `
 # Android
 
 ## Running test on Android ( remember to add the capabilities listed in the previous step )
@@ -193,6 +211,8 @@ You can resolve that by making the following changes -
     }
 
 5. Click Start Session. you should see in the Appium inspector the application that is running in the emulator. There you can inspect the elements to get the proper id to interact with them in the automation.
+
+
 
 ## Finding Elements and interacting with Elements
 
@@ -386,5 +406,8 @@ Solution:
 
 Sometimes the app needs some permissions to access some of the devices functionality, like the camera or access to the gallery... This is one way to handle those.  ( To follow this change the APK to: ` 'appium:app':  path.join(process.cwd(), 'app/android/ColorNote+Notepad.apk') ` in the ***wdio.conf.js*** )
 
+> In the example app for this section, when you first open the app, it will prompt you to allow for access to Photos, media and files on your device.
+
+Add this line in the capabilities to handle the permissions: `'appium:autoGrantPermissions':  true`
 
 
