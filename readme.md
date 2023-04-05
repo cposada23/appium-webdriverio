@@ -149,20 +149,33 @@ Look for the capabilities section and replace it with the following:
 
 ## Assertions
 > ***Element is displayed:*** `expect($('<element selector'>)).toBeDisplayed();`
+
 > ***Element to have text:*** `expect($('<element selector'>)).toHaveText("<replace expected text>");`
+
 > ***Array to Equal Array:*** `await  expect(actualList).toEqual(expectedList);`
+
 > ***Element to exist:*** `expect($('<element selector'>)).toBeExisting();`
+
 
 ## Actions
 > ***Finding an element***:  `$('<replace Element selector>');`
+
 > ***Finding multiple elements***:  `$$('<replace common Elements selector>');`
+
 > ***Click On element***:  `$('<replace Element selector>').click();`
+
 > ***Filling an input***:  `$('<replace Element selector>').setValue('<replace with value>');`
+
 > ***Add Value to a textField***:  `$('<replace Element selector>').addValue('<replace with value>');`
+
 > ***Start activity:*** `await  driver.startActivity(currentPackage,${currentPackage}${currentActivity});`
+
 >***Get Alert text:*** `await  driver.getAlertText() `
+
 >***Accept Alert:*** `await  driver.acceptAlert() `
+
 >***Dismiss Alert:*** `await  driver.dismissAlert() `
+
 # Android
 
 ## Running test on Android ( remember to add the capabilities listed in the previous step )
