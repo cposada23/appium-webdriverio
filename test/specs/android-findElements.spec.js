@@ -1,5 +1,5 @@
 describe('Android ELements Tests', () => {
-  it('Find element by accessibility id', async () => {
+  it.only('Find element by accessibility id', async () => {
     // Find element by accessibility id
     const appOption = await $('~App');
     // Click on the element
@@ -57,7 +57,7 @@ describe('Android ELements Tests', () => {
     await expect(actualList).toEqual(expectedList);
   });
 
-  it.only('Find elements by UIAutomator', async () => {
+  it('Find elements by UIAutomator', async () => {
     // find by text contains
     await $('android=new UiSelector().textContains("Animation")').click();
   });
