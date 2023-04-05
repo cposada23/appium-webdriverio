@@ -145,6 +145,7 @@ Look for the capabilities section and replace it with the following:
     }],
 
 
+# Android
 
 ## Running test on Android ( remember to add the capabilities listed in the previous step )
 
@@ -193,7 +194,7 @@ You can resolve that by making the following changes -
 
 5. Click Start Session. you should see in the Appium inspector the application that is running in the emulator. There you can inspect the elements to get the proper id to interact with them in the automation.
 
-### Finding Elements and interacting with Elements
+## Finding Elements and interacting with Elements
 
 You can fin elements by different types of attributes
 
@@ -298,3 +299,92 @@ you use $ to find single element and $$ to find multiple elements
 	    // verify the country name
 	    await  expect(textField).toHaveText('Canada');
     });
+
+## App Package and app Activity
+- appPackage: technical name of the app, provided by the developers (Top level package under which the app code resides) . Ex: 'com.google.android.youtube'
+- appActivity: Certain screen or functionality of the application. EX: MainActivity, AlertDialog
+
+***Why take this in consideration ?*** 
+1.	 Access a Screen directly
+2.	Save time in the automation script by not going through multiple pages, this decrease the change of having flaky tests
+
+#### How to go directly to a particular activity:
+1. You have to know the activity name, for this:
+	- In the Appium inspector, go to the page that you want ( In the app that we are woking in this repository, lets say we wan to start our test in the App / Alert Dialogs screen )
+	- Once you are in the correct page, in Appium inspector in the middle upper section, click commands. Then click where it says "***Select Action Group***" and select ***Device***. In the new select that gets added after you click Device, click it and select ***Android Activity***. Once you clicked it, a popup will appear with the current activity name.... In our case is " ***.app.AlertDialogSamples*** "
+	- I need also the package name combined with the activity name to be able to access that screen. To get the package name, close the popup that was opened in the previous step, and click in the button that says ***current package***. In this example the package is: " ***io.appium.android.apis*** " 
+
+Example code:
+
+    it.only('Access an Activity directly', async () => {
+	    // access activity
+	    await  driver.startActivity("io.appium.android.apis", "io.appium.android.apis.app.AlertDialogSamples");
+	    // pause 3s
+	    await  driver.pause(3000);
+	    // assertion
+	    await  expect($('//*[@text="App/Alert Dialogs"]')).toExist();
+    });
+
+## Scrolling (Android)
+
+We can make use of `UiAutomator` driver to do this kind of actions
+> UiScrollable is a `[UiCollection]` and provides support for searching for items in scrollable layout elements. This class can be used with horizontally or vertically scrollable controls.
+> See: https://developer.android.com/reference/androidx/test/uiautomator/UiScrollable
+
+>We need to make sure that the element is scrollable or not, this line takes care of it: `UiScrollable(new UiSelector().scrollable(true))` then we can perform different actions on the scrollable elements like the ones below
+
+#### Scroll to end
+Scrolls to the end of a scrollable layout element. The end can be at the bottom-most edge in the case of vertical controls, or the right-most edge for horizontal controls
+
+>  `await $('android=new UiScrollable(new UiSelector().scrollable(true)).scrollToEnd(1,5)');`
+
+
+#### Scroll text in into view
+Performs a forward scroll action on the scrollable layout element until the text you provided is visible, or until swipe attempts have been exhausted 
+> `await  $('android=new UiScrollable(new UiSelector().scrollable(true)).scrollTextIntoView("Secure Surfaces")')`
+
+#### Horizontal Scroll
+You use the `.setAsHorizontalList()` method
+> Horizontal Scrolling `await  $('android=new UiScrollable(new UiSelector().scrollable(true)).setAsHorizontalList().scrollForward()');`
+
+### Scrolling Exercise 
+With the App from the repo, do the following
+- Access the date widget
+	- view -> Date Widgets -> Dialog ( You can use the activity name to access to it )
+- Get the current date
+- Click on "Change the date"
+- Scroll Horizontally to the right
+- Pick the 10th date from the month
+- Click Ok Button 
+- Assert the date is updated
+
+Solution:
+
+    it.only('Scrolling in date pickers', async () => {
+	    const  currentActivity = '.view.DateWidgets1';
+	    const  currentPackage = 'io.appium.android.apis';
+	    // Start the activity
+	    await  driver.startActivity(currentPackage, `${currentPackage}${currentActivity}`);
+	    // Get the current date
+	    const  currentDate = await  $('//*[@resource-id="io.appium.android.apis:id/dateDisplay"]').getText();
+	    console.log(`Current date: "${currentDate}`);
+	    // Click the change the date button using accesibility id
+	    const  changeDateButton = await  $('~change the date');
+	    await  changeDateButton.click();
+	    // Horizontal scrolling
+	    await  $('android=new UiScrollable(new UiSelector().scrollable(true)).setAsHorizontalList().scrollForward()');
+	    // Select the 10th day
+	    await  $('//*[@text="10"]').click();
+	    await  $('//*[@resource-id="android:id/button1"]').click();
+	    // Assert
+	    const  updatedDate = await  $('//*[@resource-id="io.appium.android.apis:id/dateDisplay"]').getText();
+	    console.log(`Updated Date: ${updatedDate}`);
+	    await  expect(updatedDate).not.toEqual(currentDate);
+    });
+
+## Handle Permissions 
+
+Sometimes the app needs some permissions to access some of the devices functionality, like the camera or access to the gallery... This is one way to handle those.  ( To follow this change the APK to: ` 'appium:app':  path.join(process.cwd(), 'app/android/ColorNote+Notepad.apk') ` in the ***wdio.conf.js*** )
+
+
+

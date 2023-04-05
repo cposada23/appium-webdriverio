@@ -26,8 +26,9 @@ exports.config = {
     // will be called from there.
     //
     specs: [
-        './test/specs/**/android-native.spec.js'
-    ],
+        // './test/specs/**/android-native.spec.js'
+        './test/specs/android/**/test.spec.js'
+      ],
     // Patterns to exclude.
     exclude: [
         // 'path/to/excluded/files'
@@ -59,7 +60,8 @@ exports.config = {
       'appium:platformVersion': '11.0',
       'appium:deviceName': 'Pixel 4 API 30',
       'appium:automationName': 'UIAutomator2',
-      'appium:app': path.join(process.cwd(), 'app/android/ApiDemos-debug.apk')
+      // 'appium:app': path.join(process.cwd(), 'app/android/ApiDemos-debug.apk')
+      'appium:app': path.join(process.cwd(), 'app/android/ColorNote+Notepad.apk')
     }],
     //
     // ===================

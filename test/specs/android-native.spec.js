@@ -1,5 +1,5 @@
 describe('Android Native Feature Tests', () => {
-  it.only('Access an Activity directly', async () => {
+  it('Access an Activity directly', async () => {
     // access activity
     await driver.startActivity("io.appium.android.apis", "io.appium.android.apis.app.AlertDialogSamples");
 
@@ -61,6 +61,43 @@ describe('Android Native Feature Tests', () => {
     await $('android=new UiScrollable(new UiSelector().scrollable(true)).setAsHorizontalList().scrollBackward()');
 
     await driver.pause(3000);
+  });
+
+//   ### Scrolling Exercise 
+// With the App from the repo, do the following
+// - Access the date widget
+// 	- view -> Date Widgets -> Dialog ( You can use the activity name to access to it )
+// - Get the current date
+// - Click on "Change the date"
+// - Scroll Horizontally to the right
+// - Pick the 10th date from the month
+// - Click Ok Button 
+// - Assert the date is updated
+
+  it.only('Scrolling in date pickers', async () => {
+    const currentActivity = '.view.DateWidgets1';
+    const currentPackage = 'io.appium.android.apis';
+
+    // Start the activity
+    await driver.startActivity(currentPackage, `${currentPackage}${currentActivity}`);
+
+    // Get the current date
+    const currentDate = await $('//*[@resource-id="io.appium.android.apis:id/dateDisplay"]').getText();
+    console.log(`Current date: "${currentDate}`);
+    // Click the change the date button using accesibility id
+    const changeDateButton = await $('~change the date');
+    await changeDateButton.click();
+    // Horizontal scrolling
+    await $('android=new UiScrollable(new UiSelector().scrollable(true)).setAsHorizontalList().scrollForward()');
+
+    await $('//*[@text="10"]').click();
+    await $('//*[@resource-id="android:id/button1"]').click();
+
+    const updatedDate = await $('//*[@resource-id="io.appium.android.apis:id/dateDisplay"]').getText();
+    console.log(`Updated Date: ${updatedDate}`);
+    await expect(updatedDate).not.toEqual(currentDate);
+
+
   });
 
   it('Working with a date picker', async () => {
