@@ -27,7 +27,7 @@ exports.config = {
     //
     specs: [
         // './test/specs/**/android-native.spec.js'
-        './test/specs/android/**/add-note.spec.js'
+        './test/specs/android/**/delete-note.spec.js'
       ],
     // Patterns to exclude.
     exclude: [
