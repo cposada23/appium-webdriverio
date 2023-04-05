@@ -176,6 +176,9 @@ Look for the capabilities section and replace it with the following:
 
 >***Dismiss Alert:*** `await  driver.dismissAlert() `
 
+>***Go back:*** `await  driver.back() `
+
+
 # Android
 
 ## Running test on Android ( remember to add the capabilities listed in the previous step )
@@ -422,5 +425,33 @@ Sometimes the app needs some permissions to access some of the devices functiona
 > In the example app for this section, when you first open the app, it will prompt you to allow for access to Photos, media and files on your device.
 
 Add this line in the capabilities to handle the permissions: `'appium:autoGrantPermissions':  true`
+
+## Page Objects
+Page object is a design patter that creates an object repository to store all the web elements selectors, this to reduce code duplication and improving the maintainability of the tests.
+In this case the page object is a simple class where we save all the elements of a page 
+
+Ex: Edit Note Page 
+
+    class  EditNoteScreen {
+	    get  firstNote() {
+		    return  $('//*[@resource-id="com.socialnmobile.dictapps.notepad.color.note:id/title"]');
+	    }
+	    get  moreIcon() {
+		    return  $('~More');
+	    }
+	    
+	    get  deleteIcon() {
+		    return  $('//*[@text="Delete"]');
+	    }
+	    
+	    get  navIcon() {
+		    return  $('//*[@resource-id="com.socialnmobile.dictapps.notepad.color.note:id/icon_nav"]');
+	    }
+	    
+	    get  trashCanItem() {
+		    return  $('//*[@text="Trash Can"]');
+	    }
+    }
+    module.exports = new  EditNoteScreen();
 
 
