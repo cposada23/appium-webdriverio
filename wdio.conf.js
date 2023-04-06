@@ -27,7 +27,8 @@ exports.config = {
     //
     specs: [
         // './test/specs/**/android-native.spec.js'
-        './test/specs/android/**/delete-note.spec.js'
+        // './test/specs/android/**/delete-note.spec.js'
+        './test/specs/**/ios-findElements.spec.js'
       ],
     // Patterns to exclude.
     exclude: [
@@ -55,15 +56,26 @@ exports.config = {
     // Sauce Labs platform configurator - a great tool to configure your capabilities:
     // https://saucelabs.com/platform/platform-configurator
     //
-    capabilities: [{
-      'appium:platformName': 'Android',
-      'appium:platformVersion': '11.0',
-      'appium:deviceName': 'Pixel 4 API 30',
-      'appium:automationName': 'UIAutomator2',
-      // 'appium:app': path.join(process.cwd(), 'app/android/ApiDemos-debug.apk')
-      'appium:app': path.join(process.cwd(), 'app/android/ColorNoteNotepad.apk'),
-      'appium:autoGrantPermissions': true
-    }],
+    capabilities: [
+      // {
+      //   'appium:platformName': 'Android',
+      //   'appium:platformVersion': '11.0',
+      //   'appium:deviceName': 'Pixel 4 API 30',
+      //   'appium:automationName': 'UIAutomator2',
+      //   // 'appium:app': path.join(process.cwd(), 'app/android/ApiDemos-debug.apk')
+      //   'appium:app': path.join(process.cwd(), 'app/android/ColorNoteNotepad.apk'),
+      //   'appium:autoGrantPermissions': true
+      // }
+
+      {
+        'appium:platformName': 'ios',
+        'appium:platformVersion': '16.4',
+        'appium:deviceName': 'iPhone 14',
+        'appium:automationName': 'XCUITest',
+        // 'appium:app': path.join(process.cwd(), 'app/android/ApiDemos-debug.apk')
+        'appium:app': path.join(process.cwd(), 'app/ios/UIKitCatalog.app'),
+      }
+    ],
     //
     // ===================
     // Test Configurations

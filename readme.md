@@ -95,23 +95,26 @@ check the drivers installation with ***appium driver list***
 #### Appium Server
 > Install it from here https://github.com/appium/appium-desktop/releases/tag/v1.22.3-4
 
+***OR Preferred way***
+> Run Appium server in the terminal like this `appium -p 4724 --allow-cors`
+
 
 #### Appium Inspector
 The inspector is a tool to get the selector of the elements to be able to interact with them, something similar on using the Chrome or Firefox inspection tool to get the web Elements identifiers
 > Download it from here: https://github.com/appium/appium-inspector/releases
 
 >1.  **Remote Port:** Update port to  `4724`  and run Appium on the same port as well by doing  `appium -p 4724`
->2.  **Remote Path:** Set the path to  `/wd/hub/`  instead of  `/`
+>2.  **Remote Path:** Set the path to  `/wd/hub/`  instead of  `/` if using the Appium server from the Appium desktop or `/`  instead of  `/wd/hub/` if running Appium from the terminal.
 
 
 #### Appium Doctor
->This tool helps us verify if everything is setup correctly, install it by running: ***npm i -g appium-doctor***
+>This tool helps us verify if everything is setup correctly, install it by running: ***`npm i -g appium-doctor`***
 
-Run ***appium-doctor --android*** to check all the installation
+Run ***`appium-doctor --android`*** to check all the installation
 
 #### WebDriverIO setup
 
-Create a new folder for the project and in the root run ***npm init wdio*** 
+Create a new folder for the project and in the root run ***`npm init wdio`*** 
 
 >use the following configuration when prompted
 >
@@ -151,6 +154,8 @@ Look for the capabilities section and replace it with the following:
 > ***Element is displayed:*** `expect($('<element selector'>)).toBeDisplayed();`
 
 > ***Element to have text:*** `expect($('<element selector'>)).toHaveText("<replace expected text>");`
+
+> ***Element to contain text:*** `expect($('<element selector'>)).toContain("<replace expected text>");`
 
 > ***Array to Equal Array:*** `await  expect(actualList).toEqual(expectedList);`
 
@@ -230,7 +235,7 @@ You can resolve that by making the following changes -
 
 
 
-## Finding Elements and interacting with Elements
+## Finding Elements and interacting with Elements (Android)
 
 You can fin elements by different types of attributes
 
@@ -241,6 +246,7 @@ You can fin elements by different types of attributes
 - index
 - Class
 - Text
+- UiAutomator
 
 
 #### Finding and interacting with elements by Accessibility id
@@ -454,4 +460,124 @@ Ex: Edit Note Page
     }
     module.exports = new  EditNoteScreen();
 
+
+
+# iOS 
+> You'll need a mac
+## Things to install
+- XCode -> app Store 
+- Xcode Command Line Tools
+	- In the a terminal: `xcode-select --install`
+- Carthage: Dependency manager for macOS & iOS
+	- Use a tool like brew: `brew install carthage`
+- iOS deploy: Install and debug iOS apps from the command line. Designed to work on un-jailbroken devices.  `brew install ios-deploy`
+
+> After Installing all the tools, run Appium doctor to check that everything is good `appium-doctor --ios`. If all checkmarks are green you should be good to go
+
+>Remember to install the driver for iOS ( Both at project level and global ) `appium driver install xcuitest` 
+
+> Verify the drivers with: `appium driver list`
+
+**Setup the capabilities in `wdio.conf.js`**
+> To check the iOS version that you want to use, open xcode -> window -> devices and simulators. Pick the version of the simulator/device you want to use
+```
+{
+  "platformName": "ios",
+  "appium:platformVersion": "<ReplaceWithiOSVersion>",
+  "appium:deviceName": "<ReplaceWithDeviceName>",
+  "appium:automationName": "XCUITest",
+  "appium:app": "<ReplaceWithPathToAPP>"
+}
+```
+Create a sample spec file and run it to check that everything works
+> The first time it will take a while, and maybe ask you to accept some permissions
+> Recommended: Run in a different simulator than the one you are using for the automation
+
+
+## Finding Elements and interacting with Elements (iOS)
+
+You can find the elements using the selectors listed below:
+
+- ***Accessibility ID***: Remember, this is the preferred way because it allows for cross-platform compatibility ( You can use the same selector for iOS and Android )
+- ***tag name***, Usually the tag name is not unique, multiple objects can have the same tag name. There are multiple types like:
+	- Layout, textView, Button	
+- ***X-path*** Example: `//*[@name="Alert Views"]` Learn more about Xpath here: http://www.sidar.org/recur/desdi/traduc/es/xml/xpath.html
+- ***class chain*** You can say its similar to x-path but is more flexible because it gives you more ways to search for an element in the screen. You have to be explicit that you are going to use class chain using: `*-ios class chain* ` like this: `await  $('-ios class chain:<replace with the class chain>')`. Examples:
+	- > learn more about this here: https://github.com/facebookarchive/WebDriverAgent/wiki/Class-Chain-Queries-Construction-Rules
+	- `XCUIElementTypeWindow/XCUIElementTypeButton[3]`  - select the third child button of the first child window element
+	- `XCUIElementTypeWindow/XCUIElementTypeAny[3]`  - select the third child (of any type) of the first child window
+	- ``XCUIElementTypeWindow[`name CONTAINS[cd] "blabla"`]``  - select all windows, where name attribute starts with "blabla" or "BlAbla" [cd means case insensitive] 
+
+- ***predicate string***: Similar to class chains but shorter in the way you write it, using predicate strings you can select elements by different attributes like: name, value, label, type, enabled, visible... etc. You have to be explicit that you are going to use predicate string using `-ios predicate string:<replace with predicate string>`. Examples:
+	- > learn more about this here: https://github.com/facebookarchive/WebDriverAgent/wiki/Predicate-Queries-Construction-Rules
+	- `type == 'XCUIElementTypeButton' AND value BEGINSWITH[c] 'bla' AND visible == 1`
+
+#### Finding and interacting with elements by Accessibility id
+
+    it('find element by accessibility id', async () => {
+	    await  $('~Alert Views').click();
+	    await  $('~Simple').click();
+	    await  expect(await  driver.getAlertText()).toContain("A Short Title Is Best");
+    });
+
+#### Finding and interacting with elements by tag Name
+
+    it('find by tag name', async () => {
+	    // single element
+	    console.log(await  $('XCUIElementTypeStaticText').getText());
+	    // multiple elements
+	    const  textEls = await  $$('XCUIElementTypeStaticText');
+	    for (const  element  of  textEls) {
+		    console.log(await  element.getText());
+	    }
+    });
+
+#### Finding and interacting with elements by xpath
+
+    it('find element by xpath', async () => {
+	    // xpath - (//tagname[@attribute=value])
+	    // await $('//XCUIElementTypeStaticText[@name="Alert Views"]').click();
+	    // await $('//XCUIElementTypeStaticText[@label="Simple"]').click();
+	    await  $('//*[@name="Alert Views"]').click();
+	    await  $('//*[@label="Simple"]').click();
+	    await  expect(await  driver.getAlertText()).toContain("A Short Title Is Best");
+    });
+
+#### Finding and interacting with elements by class chain
+
+    it('find element by class chain', async () => {
+	    // const alertText = '**/XCUIElementTypeStaticText[`label == "Alert Views"`]';
+	    const  alertText = '**/XCUIElementTypeStaticText[`label CONTAINS "Alert"`]';
+	    await  $(`-ios class chain:${alertText}`).click();
+	    await  $('//*[@label="Simple"]').click();
+	    await  expect(await  driver.getAlertText()).toContain("A Short Title Is Best");
+    });
+
+#### Finding and interacting with elements by predicate string
+
+    it('find element by predicate string', async () => {
+		// const alertText = 'label == "Alert Views"';
+		const  alertText = 'value BEGINSWITH[c] "alert"';
+		await  $(`-ios predicate string:${alertText}`).click();
+		await  $('//*[@label="Simple"]').click();
+		await  expect(await  driver.getAlertText()).toContain("A Short Title Is Best");
+	});
+
+#### Exercise  (Using the example app)
+1. Access the default search bar in : search -> default -> default search bar
+2. Enter some text
+3. Validate that the text is there
+4. Clear the text using the x button on the right of the input
+5. Verify the input is empty
+
+Solution
+
+    it('Exercise: Enter text in the search field', async () => {
+	    await  $('~Search').click(); // Click search in the home menu
+	    await  $('~Default').click(); // Click default in the following menu
+	    await  $('//XCUIElementTypeSearchField').addValue("I love this course!"); fill the input
+	    await  expect($('//XCUIElementTypeSearchField')).toHaveAttr("value"); assert the input has a value
+	    await  $('~Clear text').click(); click the x button
+	    await  expect($('//XCUIElementTypeSearchField')).not.toHaveAttr("value"); // Validate the input is empty
+    });
 
