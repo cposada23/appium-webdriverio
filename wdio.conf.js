@@ -28,7 +28,7 @@ exports.config = {
     specs: [
         // './test/specs/**/android-native.spec.js'
         // './test/specs/android/**/delete-note.spec.js'
-        './test/specs/**/ios-findElements.spec.js'
+        './test/specs/ios/**/ios-todo-item.spec.js'
       ],
     // Patterns to exclude.
     exclude: [
@@ -67,13 +67,22 @@ exports.config = {
       //   'appium:autoGrantPermissions': true
       // }
 
+      // {
+      //   'appium:platformName': 'ios',
+      //   'appium:platformVersion': '16.4',
+      //   'appium:deviceName': 'iPhone 14',
+      //   'appium:automationName': 'XCUITest',
+      //   // 'appium:app': path.join(process.cwd(), 'app/android/ApiDemos-debug.apk')
+      //   'appium:app': path.join(process.cwd(), 'app/ios/UIKitCatalog.app'),
+      // }
+
       {
         'appium:platformName': 'ios',
-        'appium:platformVersion': '16.4',
-        'appium:deviceName': 'iPhone 14',
+        'appium:platformVersion': '14.5',
+        'appium:deviceName': 'iPhone11ios14',
         'appium:automationName': 'XCUITest',
         // 'appium:app': path.join(process.cwd(), 'app/android/ApiDemos-debug.apk')
-        'appium:app': path.join(process.cwd(), 'app/ios/UIKitCatalog.app'),
+        'appium:app': path.join(process.cwd(), 'app/ios/MVCTodo.app'),
       }
     ],
     //
